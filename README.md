@@ -41,5 +41,3 @@ Bu yapı:
 - Kurulum ve kullanım adımlarını verir
 - Modellerin işlevini belirtir
 - Geliştirici bilgilerine yer açar
-
-İstersen bu yapının bir de **İngilizce versiyonunu** ya da **proje sunumu için PDF halini** de hazırlayabilirim. Yardımcı olmamı ister misin?
