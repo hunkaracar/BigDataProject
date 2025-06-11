@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Analiz Görselleri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .transition-desc {
+      transition: all 0.4s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 py-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold mb-10 text-center text-gray-800">📊 Analiz Görselleri</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {% for visual in visuals %}
+      <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+        <img 
+          src="{{ url_for('static', filename='visuals/' + visual.filename) }}" 
+          alt="Görsel" 
+          class="cursor-pointer w-full h-56 object-cover hover:scale-105 transition-transform duration-300"
+          onclick="openModal('{{ url_for('static', filename='visuals/' + visual.filename) }}'); toggleDesc('desc{{ loop.index }}')">
+        
+        <div id="desc{{ loop.index }}" class="transition-desc max-h-0 opacity-0 overflow-hidden text-gray-700 text-sm bg-gray-50">
+          <div class="border-t border-gray-200"></div>
+          <p class="mt-2 p-2">{{ visual.description }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Modal (popup görüntü) -->
+  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center z-50">
+    <div class="relative bg-white rounded-lg shadow-lg p-4 max-w-4xl w-full">
+      <span class="absolute top-2 right-3 text-2xl text-gray-700 cursor-pointer" onclick="closeModal()">✖</span>
+      <img id="modalImage" src="" alt="Büyük Görsel" class="w-full h-auto object-contain rounded-lg">
+    </div>
+  </div>
+
+  <script>
+    function toggleDesc(id) {
+      const desc = document.getElementById(id);
+      desc.classList.toggle("max-h-0");
+      desc.classList.toggle("max-h-40");
+      desc.classList.toggle("opacity-0");
+      desc.classList.toggle("opacity-100");
+      desc.classList.toggle("p-4");
+    }
+
+    function openModal(imageSrc) {
+      const modal = document.getElementById("imageModal");
+      const modalImage = document.getElementById("modalImage");
+      modalImage.src = imageSrc;
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("imageModal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+  </script>
+</body>
+</html>

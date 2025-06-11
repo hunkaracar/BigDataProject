@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerçek Zamanlı IoT Saldırı Tespiti</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function isValidIP(ip) {
+      const regex = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+      return regex.test(ip);
+    }
+
+    async function detectAttack() {
+      const ip = document.getElementById("ip").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      if (!ip) {
+        alert("Lütfen bir IP adresi giriniz.");
+        return;
+      }
+
+      if (!isValidIP(ip)) {
+        alert("Geçersiz IP formatı. Lütfen doğru bir IPv4 adresi giriniz.");
+        return;
+      }
+
+      resultDiv.innerHTML = `
+        <div class="flex flex-col items-center mt-6 animate-pulse">
+          <div class="w-10 h-10 border-4 border-blue-400 border-dashed rounded-full animate-spin mb-3"></div>
+          <span class="text-gray-700 font-semibold">Trafik analiz ediliyor... Lütfen bekleyin.</span>
+        </div>
+      `;
+
+      try {
+        const response = await fetch("/detect", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ip})
+        });
+
+        const data = await response.json();
+
+        resultDiv.innerHTML = `
+          <div class="mt-6 px-4 py-4 rounded-xl shadow-inner bg-${data.attack_detected ? 'red' : 'green'}-100 text-${data.attack_detected ? 'red' : 'green'}-700 transition-all duration-500 animate-fade-in">
+            <span class="text-xl font-bold">
+              ${data.attack_detected ? '🚨 Saldırı Tespit Edildi!' : '✅ Güvenli Trafik'}
+            </span>
+            <div class="mt-2">
+              ${data.attack_type ? `Tespit Edilen Tür: <strong>${data.attack_type}</strong>` : ''}
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `<div class="text-red-600 mt-4">Sunucu hatası oluştu: ${error}</div>`;
+      }
+    }
+  </script>
+  <style>
+    @keyframes fade-in {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    .animate-fade-in {
+      animation: fade-in 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-blue-50 min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md transform transition-all duration-500 hover:scale-[1.02]">
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-extrabold text-blue-700 tracking-tight">IoT Saldırı Tespiti</h1>
+      <p class="text-gray-600 mt-2 text-sm">Cihazınıza gelen saldırılar anlık olarak analiz edilir. <a href="/ack" class="text-blue-500 underline">Nasıl çalışır?</a></p>
+    </div>
+
+    <label for="ip" class="block mb-2 text-sm font-medium text-gray-700">IP Adresi:</label>
+    <input type="text" id="ip" placeholder="örn. 192.168.1.1" class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 font-mono">
+
+    <button onclick="detectAttack()" class="mt-5 w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2.5 rounded-xl shadow-lg transition duration-300">
+      🔍 Saldırı Var mı?
+    </button>
+
+    <div id="result" class="mt-6 text-center text-base font-medium"></div>
+
+    <p class="mt-6 text-center text-blue-600 text-sm">
+      <a href="/visuals" class="underline hover:text-blue-800 transition">📊 Analiz Görsellerini Görüntüle</a>
+    </p>
+  </div>
+</body>
+</html>
