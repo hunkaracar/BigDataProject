@@ -31,3 +31,15 @@ Projeyi çalıştırmak için aşağıdaki Python kütüphanelerine ihtiyaç var
 
 ```bash
 pip install pandas scikit-learn xgboost joblib
+
+
+---
+
+Bu yapı:
+
+- Dosya açıklamaları içerir
+- Kurulum ve kullanım adımlarını verir
+- Modellerin işlevini belirtir
+- Geliştirici bilgilerine yer açar
+
+İstersen bu yapının bir de **İngilizce versiyonunu** ya da **proje sunumu için PDF halini** de hazırlayabilirim. Yardımcı olmamı ister misin?
